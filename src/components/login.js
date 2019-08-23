@@ -36,6 +36,8 @@ class Login extends React.Component {
                     buttonText="Login With Google"
                     onSuccess={responseGoogle}
                     onFailure={responseGoogle}
+                    accessType="token"
+                    scope="profile email https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.force-ssl"
                     cookiePolicy={'single_host_origin'}
               />
           </div>
