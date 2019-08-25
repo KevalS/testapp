@@ -1,5 +1,6 @@
 import React from 'react'
 import { GoogleLogin } from 'react-google-login';
+import * as API_KEYS from "../constants";
 
 const responseGoogle = (response) => {
     console.log(response)
@@ -32,12 +33,12 @@ class Login extends React.Component {
 
           <div style={{marginTop: '20%'}}>
               <GoogleLogin
-                    clientId="354360761435-8ll0ocu814qi9mb6umaliveuvqlce5fa.apps.googleusercontent.com"
+                    clientId={API_KEYS.CLIENT_KEY}
                     buttonText="Login With Google"
                     onSuccess={responseGoogle}
                     onFailure={responseGoogle}
                     accessType="token"
-                    scope="profile email https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.force-ssl"
+                    scope="profile email https://www.googleapis.com/auth/youtube.force-ssl"
                     cookiePolicy={'single_host_origin'}
               />
           </div>

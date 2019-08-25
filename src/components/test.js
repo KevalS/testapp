@@ -5,7 +5,7 @@ import * as API_KEYS from '../constants'
 class SimpleComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {livechatId:'', url: '', api_result:[], isLoading: true};
+    this.state = {livechatId:'', url: '', api_result:[], isLoading: true, message:''};
     let videoUrl = localStorage.getItem('videoId')
     videoUrl = JSON.parse(videoUrl)
     let videoTitle = localStorage.getItem('title')
@@ -16,7 +16,7 @@ class SimpleComponent extends React.Component {
   }
 
   updateInput(event){
-  this.setState({username : event.target.value})
+  this.setState({message : event.target.value})
   }
 
   getChatdata(videoId_per_video) {
@@ -27,44 +27,40 @@ class SimpleComponent extends React.Component {
 
     handleSubmit() {
 
-        let msg = 'Test message'
+        (async () => {
+
+
+            console.log("message = ", this.state.message)
+            console.log("this.state.livechatId = ",this.state.livechatId)
+        let body = {
+                     "snippet": {
+                       "liveChatId": this.state.livechatId,
+                       "textMessageDetails": {
+                         "messageText": this.state.message
+                       },
+                       "type": "textMessageEvent"
+                     }
+                    }
         let accessToken = JSON.parse(localStorage.getItem('tokenObj'))['access_token']
-        let liveChatid = this.state.livechatId;
-        let data_new = JSON.stringify({
-            "snippet": {
 
-
-                'liveChatId': liveChatid,
-                'type': 'textMessageEvent',
-                'textMessageDetails': {
-                    messageText: msg
-                }
-
-
-            }
-        })
-
-        // let data2 = JSON.stringify({
-        //     snippet: {
-        //         type: "textMessageEvent",
-        //         liveChatId: liveChatid,
-        //         textMessageDetails: {
-        //             messageText: "Hello World",
-        //         }
-        //
-        //     }
-        // })
-
-        fetch('https://www.googleapis.com/youtube/v3/liveChat/messages?part=snippet&liveChatId=' + liveChatid, {
+          const rawResponse = await fetch('https://www.googleapis.com/youtube/v3/liveChat/messages?part=snippet&liveChatId=' + this.state.livechatId, {
             method: 'POST',
             headers: {
-                'Authorization': 'Bearer ya29.GlttB8fXy4TWJb7vwtxfaIzXDMWwvChQZKGC4QuJTjbmWyQxOcLTXHL6q_ncsuTnC4OcP9DZRsyMc3sjBN5EM-M0fToJJu_ILfXY43F79n3loNEopvUzQUzxgrL-',
-
+                'Authorization': 'Bearer '+accessToken,
+              // 'Accept': 'application/json',
+              'Content-Type': 'application/json'
             },
-            body: data_new,
-        }).then((res) => res.json())
-            .then((data) => console.log(data))
-            .catch((err) => console.log(err))
+              // 'message-body': "{ snippet: { liveChatId:'Cg0KC2hIVzFvWTI2a3hR' ,type: 'textMessageEvent',textMessageDetails: { messageText: 'test message' }}}",
+            body: JSON.stringify(body)
+          });
+          this.setState({message : ''})
+          this.setState({'message' : ''})
+          this.setState.message ='';
+          const content = await rawResponse.json();
+
+          console.log(content);
+        })();
+
     }
 
 
@@ -148,9 +144,10 @@ class SimpleComponent extends React.Component {
 						this.state.api_result1.map(post => {
 						return (
 							<div className="blog-block">
-                <p><img src={post.image_url} /></p>
+                <p><img className="imageG" src={post.image_url} /></p>
+                                <p><b className="authorname">{post.author_name}</b></p>
 								<p>{post.message}</p>
-                <p>{post.author_name}</p>
+
 							</div>
 						);
 						})
@@ -158,13 +155,15 @@ class SimpleComponent extends React.Component {
 						<p>Loading...</p>
 					)}
         </div>
+        { !isLoading ? (
         <div className="messageArea">
           <label>
             Message:
-            <input type="text" className="input"  name="message" onChange={this.updateInput} />
+            <input type="text" className="input" value= {this.state.message}  name="message" onChange={this.updateInput} />
           </label>
             <button className="btn"  value="Submit" onClick={this.handleSubmit}>Send</button>
         </div>
+            ):(<p></p>)}
       </div>
 
 

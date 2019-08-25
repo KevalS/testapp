@@ -83,8 +83,10 @@ class Home extends React.Component {
 
 
     getYoutubeData(){
+        let apiKeys2 = API_KEYS.API_KEYS
+        let k = Math.floor(Math.random() * apiKeys2.length)
 
-         fetch("https://www.googleapis.com/youtube/v3/search?pageToken=" + this.state.nextPageToken + "&part=snippet&eventType=live&maxResults=50&type=video&key=AIzaSyAyH0YlJHqOQ5TXQLtloq4gh60n6HBOwzo")
+         fetch("https://www.googleapis.com/youtube/v3/search?pageToken=" + this.state.nextPageToken + "&part=snippet&eventType=live&maxResults=50&type=video&key="+apiKeys2[k])
           .then(res => res.json())
           .then((result) => {
             this.setState.apiResp = result.items
@@ -146,7 +148,7 @@ class Home extends React.Component {
           </header>
          <div className="Button">
              <GoogleLogout
-              clientId="354360761435-8ll0ocu814qi9mb6umaliveuvqlce5fa.apps.googleusercontent.com"
+              clientId={API_KEYS.CLIENT_KEY}
               buttonText="Logout"
               onLogoutSuccess={logout}>
              </GoogleLogout>
